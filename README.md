@@ -1,7 +1,7 @@
 # ABCE
 contrast_enhancing.py - processing of OE matrix with enhancing
 
-cropped_pc.py - processing of OE matrix with cropping heterochomatin
+cropped_pc.py - processing of OE matrix with cropping heterochomatine
 
 to_r.py - r-script manager
 
