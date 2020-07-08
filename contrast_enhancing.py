@@ -10,7 +10,7 @@ picname = 'C:/Desktop/juicebox/scripts/pictures/' # directory of picture output
 fname = 'geh.2.2.100.kr.oe' # name of matrix
 resolution = 100000 # matrix resolution in bp
 frame = (0,1) # range of frame within contact smoothed (see error.py)
-frag = (0,122) # distance in bins to change range of smoothing (see error.py)
+dist = (0,122) # distance in bins to change range of smoothing (see error.py)
 # smoothing is equal resolution lowering
 rge = (82000000,115000000) # genome coordinate in bp within matrix analysed
 
@@ -60,10 +60,10 @@ ma.sort()
 # plt.clf()
 elp = timeit.default_timer() - start_time
 print '\treading oe %.2f' % elp
-for fr in range(len(frag)-1):
-	if ln > fr:
-		f = frame[fr]
-		for k in range(frag[fr],frag[fr+1]):
+for d in range(len(dist)-1):
+	if ln > d:
+		f = frame[d]
+		for k in range(dist[d],dist[d+1]):
 			for i in range(ln):
 				i0 = i-f
 				i1 = i+f+1
