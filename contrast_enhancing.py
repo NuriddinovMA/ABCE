@@ -1,18 +1,23 @@
 import os
 import timeit
+import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 
-dirname = 'C:/Desktop/juicebox/dump/GEH/dencity/' # name of directory containing observed/expected matrices in dencity format
-outname = 'C:/Users/admin/Documents/R/E/' # directory of corrected matrix output
-picname = 'C:/Desktop/juicebox/scripts/pictures/' # directory of picture output
+parser = argparse.ArgumentParser(description='Process the o/e contact matrix to increase a contrast between A/B-compartment')
+parser.add_argument('--input','-i', help='The name of input file. This file must contains a dense observed/expected matrix. See juicebox dump')
+parser.add_argument('--out','-o', default=False, help='The directory for a corrected matrix ouput.')
+parser.add_argument('--pic','-p', default=False, help='The directory for a picture output.')
+parser.add_argument('--distance','-d', narga='+', default=[0], help='The distance step of increasing area of contact uniting in bins. For example: 0 60 100 200')
+parser.add_argument('--frame','-f', narga='+', default=[0], help='The radius of contact uniting area in bins. For example: 0 1 2 5. The number of variable in -d and -f must be same')
+parser.add_argument('--locus','-l', default=(0,0), help='Genomic coordinates of locus of interest in bp. By default, the script processes the full matrix.')
+parser.add_argument('--resolution','-r', help='The matrix resolution in bp')
+args=parser.parse_args()
 
-fname = 'geh.2.2.100.kr.oe' # name of matrix
-resolution = 100000 # matrix resolution in bp
-frame = (0,1) # range of frame within contact smoothed (see error.py)
-dist = (0,122) # distance in bins to change range of smoothing (see error.py)
-# smoothing is equal resolution lowering
-rge = (82000000,115000000) # genome coordinate in bp within matrix analysed
+fname = args.input.split('/')[-1]
+dirname = args.input[:-len(fname)]
+if args.out == False: args.out=dirname
+if args.pic == False: args.oic=args.out
 
 A = []
 start_time = timeit.default_timer()
@@ -20,15 +25,15 @@ start_time = timeit.default_timer()
 parse = fname.split('.')
 elp = timeit.default_timer() - start_time
 print 'start processing %s %.2f' % (fname, elp)
-M = np.genfromtxt(dirname+fname,dtype=np.float32)
+M = np.genfromtxt(args.input,dtype=np.float32)
 ln = len(M)
 print ln
 
-if rge[1] != 0: rge = rge[0]/resolution,rge[1]/resolution
-else: rge = 0,ln
+if args.locus[1] != 0: args.locus = args.locus[0]/args.resolution,args.locus[1]/args.resolution
+else: args.locus = 0,ln
 
-print rge
-M = M[rge[0]:rge[1],rge[0]:rge[1]]
+print args.locus
+M = M[args.locus[0]:args.locus[1],args.locus[0]:args.locus[1]]
 ln = len(M[0])
 print ln
 A = np.zeros([ln,ln])
@@ -60,10 +65,10 @@ ma.sort()
 # plt.clf()
 elp = timeit.default_timer() - start_time
 print '\treading oe %.2f' % elp
-for d in range(len(dist)-1):
+for d in range(len(args.distance)-1):
 	if ln > d:
-		f = frame[d]
-		for k in range(dist[d],dist[d+1]):
+		f = args.frame[d]
+		for k in range(args.distance[d],args.distance[d+1]):
 			for i in range(ln):
 				i0 = i-f
 				i1 = i+f+1
@@ -93,13 +98,13 @@ print '\tresolution combined %.2f' % elp
 A = np.nan_to_num(A)
 im = plt.imshow(A, cmap='coolwarm',vmin = 0, vmax = 2.5)
 plt.colorbar(im)
-plt.savefig(fname+'.smooth.median.png',dpi=400)
+plt.savefig(args.pic+ fname+'.smooth.median.png',dpi=400)
 plt.clf()
 # np.savetxt(outname+fname+'.smouth.oe', A)
 A = A - np.nanmean(A,axis=0)
 im = plt.imshow(A, cmap='coolwarm',vmin = -2.5, vmax = 2.5)
 plt.colorbar(im)
-plt.savefig(fname+'.norm.mean.png',dpi=400)
+plt.savefig(args.pic+fname+'.norm.mean.png',dpi=400)
 plt.clf()
 A = np.nan_to_num(A)
 A = np.corrcoef(A)
@@ -107,7 +112,7 @@ A[ma,:] = np.nan
 A[:,ma] = np.nan
 im = plt.imshow(A, cmap='coolwarm',vmin = -1, vmax = 1)
 plt.colorbar(im)
-plt.savefig(fname+'.smouth.prs.png',dpi=400)
+plt.savefig(args.pic +fname+'.smouth.prs.png',dpi=400)
 plt.clf()
 # np.savetxt(outname+fname+'.smouth.prs', A)
 S = np.zeros([ln,ln])
@@ -156,13 +161,13 @@ for f in [1,3,5]: # range of frame within contacts contrasted
 	print '\t\tend contracting frame %i %.2f' % (f,elp)
 	im = plt.imshow(P, cmap='coolwarm',vmin = -2, vmax = 2)
 	plt.colorbar(im)
-	plt.savefig(picname+fname+'.%i.smouth.prc.prs.png' % f,dpi=400)
+	plt.savefig(args.pic+fname+'.%i.smouth.prc.prs.png' % f,dpi=400)
 	plt.clf()
 	np.savetxt(outname+fname+'.%i.smouth.prc.prs' % f, P)
 	P = np.zeros([ln,ln])
 	im = plt.imshow(S, cmap='coolwarm',vmin = -1, vmax = 1)
 	plt.colorbar(im)
-	plt.savefig(picname+fname+'.%i.smouth.range.prs.png' % f,dpi=400)
+	plt.savefig(args.pic+fname+'.%i.smouth.range.prs.png' % f,dpi=400)
 	plt.clf()
 	np.savetxt(outname+fname+'.%i.smouth.range.prs' % f, S)
 	S = np.zeros([ln,ln])

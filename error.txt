@@ -1,0 +1,5 @@
+C:/Desktop/juicebox/dump/Anopheles/density/AalbS2_V3.2L.2L.25000.none
+54 1
+588 2
+589 3
+590 4

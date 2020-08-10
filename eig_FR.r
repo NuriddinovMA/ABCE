@@ -1,21 +1,21 @@
-#print("OE")
 args <- commandArgs(trailingOnly = T)
 print(args)
 a<-getwd()
 print("111")
 sp <- args[2]
 res <- as.integer(args[3])
-chr <- args[4]
-base <- as.integer(as.integer(args[5])/res)
+fr <- as.integer(args[4])
+chr <- args[5]
+base <- as.integer(as.integer(args[6])/res)
 n <- as.integer(length(args))
-n <- seq.int(5,n,2)
+n <- seq.int(6,n,2)
 m.p <- c()
 N <- c(5)
-fr <- 200
 
-spA = 'AmerR4A_V4'
+
+
 for(k in N){
-fn <- paste0('E/',spA,'.',chr,'.',chr,'.25000.cropped.prs')
+fn <- paste0('E/',sp)
 m.s <- scan(fn, sep=' ')
 lnf <- as.integer( sqrt(length(m.s)) )
 m.m <- matrix(m.s,nrow=lnf,byrow=T)
