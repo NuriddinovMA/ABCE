@@ -8,8 +8,8 @@ parser = argparse.ArgumentParser(description='Dump locus of interest from given 
 parser.add_argument('--input','-i', help='The name of input file. This file must contains a dense observed/expected matrix. See juicebox dump')
 parser.add_argument('--out','-o', default=False, help='The directory for a corrected matrix output. By default, the output matrix is placed with input matrix.')
 parser.add_argument('--pic','-p', default=False, help='The directory for a picture output. By default, no picture output.')
-parser.add_argument('--locus','-l', nargs=2, default=(0,0), help='Genomic coordinates of locus of interest in bp. For example "-l 1000000 10000000", if you wish analyze the locus between 1Mb and 10 Mb. By default, the script processes the full matrix.')
-parser.add_argument('--resolution','-r', help='The matrix resolution in bp')
+parser.add_argument('--locus','-l', nargs=2, type=int, default=(0,0), help='Genomic coordinates of locus of interest in bp. For example "-l 1000000 10000000", if you wish analyze the locus between 1Mb and 10 Mb. By default, the script processes the full matrix.')
+parser.add_argument('--resolution','-r',type=int, help='The matrix resolution in bp')
 args=parser.parse_args()
 
 fname = args.input.split('/')[-1]
@@ -24,8 +24,7 @@ elp = timeit.default_timer() - start_time
 print 'start processing %s %.2f' % (fname, elp)
 M = np.genfromtxt(args.input,dtype=np.float32)
 ln = len(M)
-print ln
-
+print ln, args.locus, args.resolution
 if args.locus[1] != 0: args.locus = args.locus[0]/args.resolution,args.locus[1]/args.resolution
 else: args.locus = 0,ln
 

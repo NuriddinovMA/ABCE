@@ -6,7 +6,7 @@ import numpy as np
 parser = argparse.ArgumentParser(description='Calculate an area within the contacts are desirable united to avoid noise effects')
 parser.add_argument('--input','-i', help='The name of input file. This file must contains a dense matrix with NONE-normalized contact counts. See juicebox dump')
 parser.add_argument('--out','-o', help='The name of output file.')
-parser.add_argument('--threshold','-t',type=int,default=25, help='The minimal mean contact number within some area for a given distance. If a contact number is less then the given threshold, the area are increased.')
+parser.add_argument('--threshold','-t',type=int, default=25, help='The minimal mean contact number within some area for a given distance. If a contact number is less then the given threshold, the area are increased.')
 args=parser.parse_args()
 
 

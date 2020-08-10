@@ -8,11 +8,11 @@ parser = argparse.ArgumentParser(description='Process the o/e contact matrix to 
 parser.add_argument('--input','-i', help='The name of input file. This file must contains a dense observed/expected matrix. See juicebox dump')
 parser.add_argument('--out','-o', default=False, help='The directory for a corrected matrix output. By default, the output matrix is placed with input matrix.')
 parser.add_argument('--pic','-p', default=False, help='The directory for a picture output. By default, no picture output.')
-parser.add_argument('--locus','-l', nargs=2, default=(0,0), help='Genomic coordinates of locus of interest in bp. For example "-l 1000000 10000000", if you wish analyze the locus between 1Mb and 10 Mb. By default, the script processes the full matrix.')
-parser.add_argument('--resolution','-r', help='The matrix resolution in bp'))
-parser.add_argument('--distance','-d', nargs='+', default=[0], help='The distance step of increasing area of contact uniting in bins. For example: "-d 0 60 100 200" ')
-parser.add_argument('--combining','-c', nargs='+', default=[0], help='The radius of contact combining area in bins. For example: "-c 0 1 2 5". The number of variable in -d and -f must be same')
-parser.add_argument('--enhancing','-e', nargs='+', default=[5], help='The radius of contrast enhancing area. For example: "-e 1 3 5 7", the script generates particular matrix for each value. By default is 5. ')
+parser.add_argument('--locus','-l', nargs=2, type=int, default=(0,0), help='Genomic coordinates of locus of interest in bp. For example "-l 1000000 10000000", if you wish analyze the locus between 1Mb and 10 Mb. By default, the script processes the full matrix.')
+parser.add_argument('--resolution','-r',type=int, help='The matrix resolution in bp')
+parser.add_argument('--distance','-d', nargs='+',type=int, default=[0], help='The distance step of increasing area of contact uniting in bins. For example: "-d 0 60 100 200" ')
+parser.add_argument('--combining','-c', nargs='+',type=int, default=[0], help='The radius of contact combining area in bins. For example: "-c 0 1 2 5". The number of variable in -d and -f must be same')
+parser.add_argument('--enhancing','-e', nargs='+',type=int, default=[5], help='The radius of contrast enhancing area. For example: "-e 1 3 5 7", the script generates particular matrix for each value. By default is 5. ')
 args=parser.parse_args()
 
 fname = args.input.split('/')[-1]
@@ -142,16 +142,16 @@ for f in args.enhancing:
 	if args.pic != False:
 		im = plt.imshow(P, cmap='coolwarm',vmin = -2, vmax = 2)
 		plt.colorbar(im)
-		plt.savefig(args.pic+fname+'.%i.smouth.prc.prs.png' % f,dpi=400)
+		plt.savefig(args.pic+fname+'.%i.ce.prc.prs.png' % f,dpi=400)
 		plt.clf()
-	np.savetxt(outname+fname+'.%i.smouth.prc.prs' % f, P)
+	np.savetxt(args.out + fname+'.%i.ce.prc.prs' % f, P)
 	P = np.zeros([ln,ln])
 	if args.pic != False:
 		im = plt.imshow(S, cmap='coolwarm',vmin = -1, vmax = 1)
 		plt.colorbar(im)
-		plt.savefig(args.pic+fname+'.%i.smouth.range.prs.png' % f,dpi=400)
+		plt.savefig(args.pic+fname+'.%i.ce.range.prs.png' % f,dpi=400)
 		plt.clf()
-	np.savetxt(outname+fname+'.%i.smouth.range.prs' % f, S)
+	np.savetxt(args.out+fname+'.%i.ce.range.prs' % f, S)
 	S = np.zeros([ln,ln])
 	elp = timeit.default_timer() - start_time
 	print '\t\t writing contracting matrix frame %i %.2f' % (f,elp)
