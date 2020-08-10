@@ -1,24 +1,30 @@
 # ABCE
+The ABCE script pack is designed to calculate A/B-compartment in complicated cases such as the ruble-configuration, large invesrions, hard heterchromatin blocks etc.
 
-First stage is the enhancing of contact matrixes. This may be doed by two ways: 
+At first, you should define to be your case very complicated or not to be.
 
-1) cropped_pc.py - processing of OE matrix with cropping heterochomatine
-2) contrast_enhancing.py - processing of OE matrix with cropping heterochomatine and contrast enhancing
+NO COMPLICATED CASE
 
-This scripts require a observed/expected matrix in dencity format. They analyze only interchromosome contacts. 
+If you think the problem with compartment calculation is caused only by large inversion, or some hard heterohromatin blocks, or some local problem with genome assembly, we can enhanced the contact matrix by cutting off all problems.
+Than:
+1) Dump observed/expected contact matrix in density format (for more details see: https://github.com/aidenlab/juicer/wiki/Data-Extraction).
 
-If you use juicertools to generate hi-c matrix, we can dump required matrix:
 java -jar juicertools.jar dump oe KR -d you_hic_map_name.hic chr_name chr_name BP resolution path_output
+ATTENTION! ABCE works only with intrachromosomal contacts!
 
-Second stage is calculating PC1 from scripts output. 
+2) Use cropping_enhancing.py on dumped observed/expected matrix (use -h to more details).
 
-to_r.py - r-script manager
+python cropping_enhancing.py -i path_to_your_matrix -o path_to_output_directory -l start_locus end_locus -r matrix_resolution_in_bp
 
-eig_CE.r - generates contrast enhanced PC1
+The script output named as "your_matrix.cropped.prs" contains a pearson correlation of contact matrix within locus of interest.
 
-eig_CR.r -  generates PC1 from cropped matrixes
+THE HARD CASE
 
-eig_CR2.r - generates PC2 from cropped matrixes
+A/B-calculation
 
-eig_FR.r - generates PC1 from cropped matrixes with framing
 
+Second stage is calculating PC from scripts output. 
+
+eig_CE.r - generates PC1 from local frames.
+
+eig_CR.r -  generates PC1/2/... from full matrixes.
