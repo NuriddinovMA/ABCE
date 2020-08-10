@@ -10,6 +10,7 @@ Than:
 1) Dump observed/expected contact matrix in density format (for more details see: https://github.com/aidenlab/juicer/wiki/Data-Extraction).
 
 java -jar juicertools.jar dump oe KR -d you_hic_map_name.hic chr_name chr_name BP resolution path_to_your_oe_matrix
+
 ATTENTION! ABCE works only with intrachromosomal contacts!
 
 2) Use cropping_enhancing.py on dumped observed/expected matrix (use -h to more details).
@@ -30,15 +31,20 @@ java -jar juicertools.jar dump observed NONE -d you_hic_map_name.hic chr_name ch
 ATTENTION! ABCE works only with intrachromosomal contacts!
 
 2) Estimating of minimal radius for combining and smoothing contacts (use -h and see ExampleCommand.txt to more details).
+
 python error_estimation.py -i path_to_your_raw_matrix -o output -t threshold
 
 The "threshold" is a number of minimal contacts in the area (mean for given distance).
 The output looks like this:
 
 example/example.25000.none
+
 46 1
+
 510 2
+
 511 3
+
 512 4
 
 That means the desirable radius of contact combining for loci lying between 0 and 46 bins is 0, between 46 and 510 bins is 1, etc. This information is a advise, not a requirement. 
