@@ -18,7 +18,6 @@ m.m[!is.finite(m.m)] <- 0
 gc.c <- read.table(corname)[,4]
 gc.c[gc.c>20] <- 20
 
-m.s <- m.m[st:fi,st:fi]
 gc.s <- gc.c[st:fi]
 gc.s[!is.finite(gc.s)] <- 0
 
@@ -31,7 +30,7 @@ s[step,2] <- ln
 print(s)
 
 for(i in 1:step){
-m.h <- m.s[s[i,1]:s[i,2],s[i,1]:s[i,2]]
+m.h <- m.m[s[i,1]:s[i,2],s[i,1]:s[i,2]]
 m.pca <- princomp(m.h)
 m.pr <- predict(m.pca)[,1]
 m.h <- m.pr

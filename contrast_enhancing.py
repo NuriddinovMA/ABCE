@@ -6,18 +6,18 @@ import matplotlib.pyplot as plt
 
 parser = argparse.ArgumentParser(description='Process the o/e contact matrix to increase a contrast between A/B-compartment')
 parser.add_argument('--input','-i', help='The name of input file. This file must contains a dense observed/expected matrix. See juicebox dump')
-parser.add_argument('--out','-o', default=False, help='The directory for a corrected matrix ouput.')
-parser.add_argument('--pic','-p', default=False, help='The directory for a picture output.')
-parser.add_argument('--distance','-d', narga='+', default=[0], help='The distance step of increasing area of contact uniting in bins. For example: 0 60 100 200')
-parser.add_argument('--frame','-f', narga='+', default=[0], help='The radius of contact uniting area in bins. For example: 0 1 2 5. The number of variable in -d and -f must be same')
-parser.add_argument('--locus','-l', default=(0,0), help='Genomic coordinates of locus of interest in bp. By default, the script processes the full matrix.')
-parser.add_argument('--resolution','-r', help='The matrix resolution in bp')
+parser.add_argument('--out','-o', default=False, help='The directory for a corrected matrix output. By default, the output matrix is placed with input matrix.')
+parser.add_argument('--pic','-p', default=False, help='The directory for a picture output. By default, no picture output.')
+parser.add_argument('--locus','-l', nargs=2, default=(0,0), help='Genomic coordinates of locus of interest in bp. For example "-l 1000000 10000000", if you wish analyze the locus between 1Mb and 10 Mb. By default, the script processes the full matrix.')
+parser.add_argument('--resolution','-r', help='The matrix resolution in bp'))
+parser.add_argument('--distance','-d', nargs='+', default=[0], help='The distance step of increasing area of contact uniting in bins. For example: "-d 0 60 100 200" ')
+parser.add_argument('--combining','-c', nargs='+', default=[0], help='The radius of contact combining area in bins. For example: "-c 0 1 2 5". The number of variable in -d and -f must be same')
+parser.add_argument('--enhancing','-e', nargs='+', default=[5], help='The radius of contrast enhancing area. For example: "-e 1 3 5 7", the script generates particular matrix for each value. By default is 5. ')
 args=parser.parse_args()
 
 fname = args.input.split('/')[-1]
 dirname = args.input[:-len(fname)]
 if args.out == False: args.out=dirname
-if args.pic == False: args.pic=args.out
 
 A = []
 start_time = timeit.default_timer()
@@ -52,7 +52,7 @@ elp = timeit.default_timer() - start_time
 print '\treading oe %.2f' % elp
 for d in range(len(args.distance)-1):
 	if ln > d:
-		f = args.frame[d]
+		f = args.combining[d]
 		for k in range(args.distance[d],args.distance[d+1]):
 			for i in range(ln):
 				i0 = i-f
@@ -76,23 +76,26 @@ for d in range(len(args.distance)-1):
 elp = timeit.default_timer() - start_time
 print '\tresolution combined %.2f' % elp
 A = np.nan_to_num(A)
-im = plt.imshow(A, cmap='coolwarm',vmin = 0, vmax = 2.5)
-plt.colorbar(im)
-plt.savefig(args.pic+ fname+'.smooth.median.png',dpi=400)
-plt.clf()
+if args.pic != False:
+	im = plt.imshow(A, cmap='coolwarm',vmin = 0, vmax = 2.5)
+	plt.colorbar(im)
+	plt.savefig(args.pic+ fname+'.smooth.median.png',dpi=400)
+	plt.clf()
 A = A - np.nanmean(A,axis=0)
-im = plt.imshow(A, cmap='coolwarm',vmin = -2.5, vmax = 2.5)
-plt.colorbar(im)
-plt.savefig(args.pic+fname+'.norm.mean.png',dpi=400)
-plt.clf()
+if args.pic != False:
+	im = plt.imshow(A, cmap='coolwarm',vmin = -2.5, vmax = 2.5)
+	plt.colorbar(im)
+	plt.savefig(args.pic+fname+'.norm.mean.png',dpi=400)
+	plt.clf()
 A = np.nan_to_num(A)
 A = np.corrcoef(A)
 A[ma,:] = np.nan
 A[:,ma] = np.nan
-im = plt.imshow(A, cmap='coolwarm',vmin = -1, vmax = 1)
-plt.colorbar(im)
-plt.savefig(args.pic +fname+'.smouth.prs.png',dpi=400)
-plt.clf()
+if args.pic != False:
+	im = plt.imshow(A, cmap='coolwarm',vmin = -1, vmax = 1)
+	plt.colorbar(im)
+	plt.savefig(args.pic +fname+'.smouth.prs.png',dpi=400)
+	plt.clf()
 S = np.zeros([ln,ln])
 P = np.zeros([ln,ln])
 for i in range(ln): 
@@ -103,7 +106,7 @@ for i in range(ln):
 	except IndexError: pass
 elp = timeit.default_timer() - start_time
 print '\tcorrelating and cleaning  %.2f' % elp
-for f in [1,3,5]:
+for f in args.enhancing:
 	elp = timeit.default_timer() - start_time
 	print '\t\tstart contracting frame %i %.2f' % (f,elp)
 	for i in range(ln):
@@ -124,7 +127,6 @@ for f in [1,3,5]:
 			if j1 >= ln:
 				j0 = ln-2*f-1
 				j1 = ln
-			# try:
 			R = np.nanpercentile(A[i0:i1,j0:j1],75),np.nanpercentile(A[i0:i1,j0:j1],25)
 			C = (R[0] + R[1])/2.
 			D = (R[0] - R[1])/2.
@@ -137,16 +139,18 @@ for f in [1,3,5]:
 			S[j,i] = S[i,j]
 	elp = timeit.default_timer() - start_time
 	print '\t\tend contracting frame %i %.2f' % (f,elp)
-	im = plt.imshow(P, cmap='coolwarm',vmin = -2, vmax = 2)
-	plt.colorbar(im)
-	plt.savefig(args.pic+fname+'.%i.smouth.prc.prs.png' % f,dpi=400)
-	plt.clf()
+	if args.pic != False:
+		im = plt.imshow(P, cmap='coolwarm',vmin = -2, vmax = 2)
+		plt.colorbar(im)
+		plt.savefig(args.pic+fname+'.%i.smouth.prc.prs.png' % f,dpi=400)
+		plt.clf()
 	np.savetxt(outname+fname+'.%i.smouth.prc.prs' % f, P)
 	P = np.zeros([ln,ln])
-	im = plt.imshow(S, cmap='coolwarm',vmin = -1, vmax = 1)
-	plt.colorbar(im)
-	plt.savefig(args.pic+fname+'.%i.smouth.range.prs.png' % f,dpi=400)
-	plt.clf()
+	if args.pic != False:
+		im = plt.imshow(S, cmap='coolwarm',vmin = -1, vmax = 1)
+		plt.colorbar(im)
+		plt.savefig(args.pic+fname+'.%i.smouth.range.prs.png' % f,dpi=400)
+		plt.clf()
 	np.savetxt(outname+fname+'.%i.smouth.range.prs' % f, S)
 	S = np.zeros([ln,ln])
 	elp = timeit.default_timer() - start_time
