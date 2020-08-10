@@ -66,7 +66,8 @@ Second stage is calculating PC from scripts output.
 Using (see ExampleCommand.txt to more details):
 
 eig_CR.r --args your_enhanced_matrix number_of_PC resolution_in_bp chrm_name locus_start_in_bp locus_end_in_bp 
-if you wish calculate A\B-compartment, than number_of_PC is 1.
+
+If you wish calculate A\B-compartment, than number_of_PC is 1.
 
 2) eig_CE.r - generates PC1 from local frames.
 This script splits locus of interest on several frames and calculate independly PC1 for each frame. Than values of PC1 are correlated with given track (.badGraph) and the data from different frame are combined. Than operation help us to avoid problems with distant interaction.
