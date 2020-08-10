@@ -16,7 +16,7 @@ ATTENTION! ABCE works only with intrachromosomal contacts!
 
 python cropping_enhancing.py -i path_to_your_matrix -o path_to_output_directory -l start_locus end_locus -r matrix_resolution_in_bp
 
-The script output named as "your_matrix.cropped.prs" contains a pearson correlation of contact matrix within locus of interest.
+The script output named as "your_matrix.cropped.prs" contains a pearson correlation of contact matrix within locus of interest. This matrix are given as parameter to eig_CE.r or eig_CR.r
 
 THE HARD CASE
 
