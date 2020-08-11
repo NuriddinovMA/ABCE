@@ -126,11 +126,11 @@ these frames in bp
 
 * track_for_correlation.bedGraph - Values of PC1 calculated within individual frames should 
 be correlated with external standard. This standard (.badGraph format) should reflect chromatin state, i.e. represent
-GC-content, gene density or transcriptional activity. See [parameters optimization](#params) and **usage notes** for details.
+GC-content, gene density or transcriptional activity. See [parameters optimization](#params) and [usage notes](#use_notes) for details.
 
 The resulting file will contain desired PC1 vector: *your_enhanced_matrix.framed.eig.bedGraph*
 
-##<a name="params"></a>Parameters optimization
+## <a name="params"></a> Parameters optimization
 
 The ABCE pipline requeres oprimization of several parameters.
 
@@ -203,7 +203,8 @@ In our experience, the highest correlation is obtained when using RNA-seq data (
 However, gene density (calculated per Hi-C bin) also works well. GC-contents gives very low correlation
 values and should not be used if other options available.
 
-### Usage notes 
+## <a name="use_notes"></a> 
+
 0) ABCE works only with intrachromosomal contacts!
 1) The track for correlation must contain ONLY a chromosome of locus of interest.
 2) The track must start from 0.
