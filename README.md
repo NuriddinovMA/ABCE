@@ -1,36 +1,53 @@
 # ABCE
-The ABCE script pack is designed to calculate A/B-compartment in complicated cases such as the ruble-configuration, large invesrions, hard heterchromatin blocks etc.
+The ABCE scripts are designed to calculate A/B-compartments in complicated cases such as the Rabl-configuration of chromosomes, 
+chromosomes with large invesrions, heterchromatin blocks etc.
 
-At first, you should define to be your case very complicated or not to be.
+At first, you should define whether your case is complicated or not.
 
-NO COMPLICATED CASE
+NOT COMPLICATED CASE
 
-If you think the problem with compartment calculation is caused only by large inversion, or some hard heterohromatin blocks, or some local problem with genome assembly, we can enhanced the contact matrix by cutting off all problems.
-Than:
-1) Dump observed/expected contact matrix in density format (for more details see: https://github.com/aidenlab/juicer/wiki/Data-Extraction).
+If you think the problem with compartment calculation is caused only by large 
+inversion, or heterochromatin blocks, or some local problem with genome assembly, 
+we recommend to crop these complicated regions before compartments calculation.
 
+<details>
+  <summary>NOT COMPLICATED CASE</summary>
+
+For this aim:
+1) Dump observed/expected contact matrix in dense format (for more details see: https://github.com/aidenlab/juicer/wiki/Data-Extraction).
+
+```
 java -jar juicertools.jar dump oe KR -d you_hic_map_name.hic chr_name chr_name BP resolution path_to_your_oe_matrix
-
+```
 ATTENTION! ABCE works only with intrachromosomal contacts!
 
-2) Use cropping_enhancing.py on dumped observed/expected matrix (use -h to more details).
+2) Use cropping_enhancing.py on dumped observed/expected matrix (use -h for more details).
 
+```
 python cropping_enhancing.py -i path_to_your_oe_matrix -o path_to_output_directory -l locus_start locus_end -r matrix_resolution_in_bp
+```
+Here locus_start and locus_end are genomic coordinates of single contiguous locus (free of inversions/misassemblies/heterochromatin blocks) which should be split into A/B compartments
 
-The script output named as "your_matrix.cropped.prs" contains a pearson correlation of contact matrix within locus of interest. This matrix are given as parameter to eig_CE.r or eig_CR.r
+The script output named as "your_matrix.cropped.prs" contains a pearson correlation of contact matrix within locus of interest. 
+This matrix are given as inputs to eig_CE.r or eig_CR.r (see below)
+
+</details>
 
 THE HARD CASE
 
-If you think the yor case is complicated, for example, been caused by rubl-orientaion, or easy way was unefficient, we should use the scripts error_estimation.py and contrast_enhancing.
+If you think the your case is complicated, for example, been caused by Rabl-orientation, or easy approach (described above) was unefficient, we should use the scripts error_estimation.py and contrast_enhancing.py
 
-In many case? the problem with calculating of A/B-compartments are resulted from a weak contrast between A- and B-compartments. This can be caused by rubl-orientation of chromosomes or a noise. To avoid this problem, our script combines and smoothes contacts between distant loci in relation of distance.
+In many cases the problem with calculating of A/B-compartments are resulted from a weak contrast between A- and B-compartments. 
+This can be caused by Rabl-orientation of chromosomes or a noise. 
+To avoid this problem, our script performs distance-dependen averageing and smoothing of the contacts.
 
-1) Dump raw contact matrix in density format (for more details see: https://github.com/aidenlab/juicer/wiki/Data-Extraction).
-
+1) Dump raw contact matrix in dense format (for more details see: https://github.com/aidenlab/juicer/wiki/Data-Extraction).
+```
 java -jar juicertools.jar dump observed NONE -d you_hic_map_name.hic chr_name chr_name BP resolution path_to_your_raw_matrix
+```
 ATTENTION! ABCE works only with intrachromosomal contacts!
 
-2) Estimating of minimal radius for combining and smoothing contacts (use -h and see ExampleCommand.txt to more details).
+2) Estimate minimal radius for combining and smoothing contacts (use -h and see ExampleCommand.txt to more details).
 
 python error_estimation.py -i path_to_your_raw_matrix -o output -t threshold
 
@@ -47,9 +64,10 @@ example/example.25000.none
 
 512 4
 
-That means the desirable radius of contact combining for loci lying between 0 and 46 bins is 0, between 46 and 510 bins is 1, etc. This information is a advise, not a requirement. 
+That means the desirable radius of contact combining for loci lying between 0 and 46 bins is 0, 
+between 46 and 510 bins is 1, etc. This information is a advise, not a requirement. 
 
-3) Enhancing matrix using information about distance and combine radius (use -h and see ExampleCommand.txt to more details).
+3) Enhance matrix using information about distance and combine radius (use -h and see ExampleCommand.txt to more details).
 
 python contrast_enhancing.py -i path_to_your_oe_matrix -o path_to_output_directory -l locus_start locus_end -r matrix_resolution_in_bp -d distance -c combine_radius -e contrast_enhancing_radius
 
@@ -61,7 +79,7 @@ A/B-CALCULATION
 
 Second stage is calculating PC from scripts output. 
 
-1) eig_CR.r generates PC1/2/... from full matrix.
+1) eig_CR.r generates PC1/2/... from the full matrix.
 
 Using (see ExampleCommand.txt to more details):
 
