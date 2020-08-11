@@ -23,7 +23,7 @@ The script output named as "your_matrix.cropped.prs" contains a pearson correlat
 
 If you think the yor case is complicated, for example, been caused by rubl-orientaion, or easy way was unefficient, we should use the scripts error_estimation.py and contrast_enhancing.
 
-In many case? the problem with calculating of A/B-compartments are resulted from a weak contrast between A- and B-compartments. This can be caused by rubl-orientation of chromosomes or a noise. To avoid this problem, our script combines and smoothes contacts between distant loci in relation of distance.
+In many case, the problem with calculating of A/B-compartments are resulted from a weak contrast between A- and B-compartments. This can be caused by rubl-orientation of chromosomes or a noise. To avoid this problem, our script combines and smoothes contacts between distant loci in relation of distance.
 
 1) Dump raw contact matrix in density format (for more details see: https://github.com/aidenlab/juicer/wiki/Data-Extraction).
 
