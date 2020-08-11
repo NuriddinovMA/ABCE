@@ -11,11 +11,8 @@ ABCE consists of 2 steps, each step has 2 options:
     * local (framed) approach 
     * whole-chromosome approach 
 
-You can use any combionation of the options from these two steps. The best strategy depends on your input data and should be 
-determined empirically. 
-
 <details>
-  <summary> Is my case easy or not complicated? </summary>
+  <summary> Is my case easy or complicated? </summary>
   
 * easy: you think the problem with compartments calculation is caused by large 
 inversion, heterochromatin blocks or mis-assemblies
@@ -24,6 +21,8 @@ inversion, heterochromatin blocks or mis-assemblies
  under "Easy CASE" was not efficient
 </details>
 
+You can use any combionation of the options from these two steps. The best strategy depends on your input data and should be 
+determined empirically. 
 
 ## Requerments:
 * java 8 with juicer_tools (for contacts extraction; https://github.com/aidenlab/juicer/wiki/Data-Extraction)
@@ -78,7 +77,7 @@ Parameters:
 
 * locus_start locus_end - coordinates of the locus of interest (i.e. 1000000 99000000).
 
-* distance, radius, ce_radius - see _example_command.txt_ for default values and **parameters optimization** section to find how to choose 
+* distance, radius, ce_radius - see _example_command.txt_ for default values and [parameters optimization](#params) section to find how to choose 
 distance, radius and ce_radius 
  
 The script will produce *your_matrix.[ce_radius].ce.prc.prs* and *your_matrix.[ce_radius].ce.range.prs* files.
@@ -127,11 +126,11 @@ these frames in bp
 
 * track_for_correlation.bedGraph - Values of PC1 calculated within individual frames should 
 be correlated with external standard. This standard (.badGraph format) should reflect chromatin state, i.e. represent
-GC-content, gene density or transcriptional activity. See **parameters optimization** and **usage notes** for details.
+GC-content, gene density or transcriptional activity. See [parameters optimization](#params) and **usage notes** for details.
 
 The resulting file will contain desired PC1 vector: *your_enhanced_matrix.framed.eig.bedGraph*
 
-## Parameters optimization
+##<a name="params"></a>Parameters optimization
 
 The ABCE pipline requeres oprimization of several parameters.
 
