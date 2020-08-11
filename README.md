@@ -91,7 +91,7 @@ We advice to proceed with both and manually check which will provide better resu
 ### Option 1. Compute whole-matrix PCs
 ```bash
 # Compute Principle components
-eig_CR.r --args your_enhanced_matrix PC_num resolution chrm_name locus_start locus_end
+Rscript eig_CR.r --args your_enhanced_matrix PC_num resolution chrm_name locus_start locus_end
 ```
 
 Parameters:
@@ -111,7 +111,7 @@ The resulting file will contain desired PC1 vector: *your_enhanced_matrix.croped
 
 ### Option 2. Compute PCs within local frames
 
-`eig_CE.r --args your_enhanced_matrix track_for_correlation.bedGraph resolution frame_length chrm_name locus_start locus_end`
+`Rscript eig_CE.r --args your_enhanced_matrix track_for_correlation.bedGraph resolution frame_length chrm_name locus_start locus_end`
 
 Parameters:
 * your_enhanced_matrix - should be one of the files produced in the previous steps 
@@ -134,7 +134,7 @@ The resulting file will contain desired PC1 vector: *your_enhanced_matrix.framed
 
 The ABCE pipline requeres oprimization of several parameters.
 
-**1.) paramteres of `contrast_enhancing.py` script: distance and radius**
+**1.) paramateres of `contrast_enhancing.py` script: distance and radius**
 
 This script perfroms averaging of contacts within submatrices of Hi-C matrix (matrix smoothing).
 Depending on data quality (sequencing deapth and noise level) and distance from diagonal the optimal
@@ -183,7 +183,7 @@ After certain distance the radius often increases only slightly, so at this poin
 maximal number observed in the file. In the example above, we would use radius 0 for distances 
 below 46 bins, 1 for 46..510 and 4 for distances >510 bins   
    
-**2.) paramter of `contrast_enhancing.py` script: ce_radius**
+**2.) paramater of `contrast_enhancing.py` script: ce_radius**
 
 Within any submatrix of size 2*ce_radius+1, all correlation values will be normalized to be 
 in the -1..+1 range. Thus, ce_radius should be high enough to include several compartment transistion.
@@ -197,7 +197,7 @@ For convenience, multiple space-separated values could be used as an input of `c
 
 This will produce multiple output files, each corresponding to one of the provided ce_radius values.
 
-**3.) paramter of `eig_CE.r`: track_for_correlation**
+**3.) paramater of `eig_CE.r`: track_for_correlation**
 
 In our experience, the highest correlation is obtained when using RNA-seq data (fpkm) .bedGraph. 
 However, gene density (calculated per Hi-C bin) also works well. GC-contents gives very low correlation
