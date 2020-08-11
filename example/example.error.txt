@@ -1,4 +1,6 @@
 example/example.25000.none
+distance radius
+0 0
 46 1
 510 2
 511 3
