@@ -203,7 +203,7 @@ In our experience, the highest correlation is obtained when using RNA-seq data (
 However, gene density (calculated per Hi-C bin) also works well. GC-contents gives very low correlation
 values and should not be used if other options available.
 
-## <a name="use_notes"></a> 
+## <a name="use_notes"></a> Usage notes
 
 0) ABCE works only with intrachromosomal contacts!
 1) The track for correlation must contain ONLY a chromosome of locus of interest.
