@@ -54,7 +54,7 @@ That means the desirable radius of contact combining for loci lying between 0 an
 
 3) Enhancing oe-matrix using information about distance and combine radius (use -h and see ExampleCommand.txt to more details).
 
-`python contrast_enhancing.py -i path_to_your_oe_matrix -l locus_start locus_end -r matrix_resolution_in_bp -d distance -c combine_radius -e contrast_enhancing_radius`
+`python contrast_enhancing.py -i your_oe_matrix -l locus_start locus_end -r matrix_resolution_in_bp -d distance -c combine_radius -e contrast_enhancing_radius`
 
 The script outputs are named as "your_matrix.[combine_radius].ce.prc.prs" and "your_matrix.[combine_radius].ce.range.prs".
 
