@@ -167,7 +167,7 @@ The output of `error_estimation.py` looks like this:
 
 ```
 example/example.25000.none
-distance ce_radius
+distance radius
 0 0
 46 1
 510 2
