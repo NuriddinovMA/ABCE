@@ -1,45 +1,169 @@
 # ABCE
-The ABCE script pack is designed to calculate A/B-compartment in complicated cases such as the ruble-configuration, large invesrions, hard heterchromatin blocks etc.
+The ABCE scripts are designed to calculate A/B-compartments in complicated cases such as the Rabl-configuration of chromosomes, 
+chromosomes with large inversions, heterchromatin blocks and etc.
 
-At first, you should define to be your case very complicated or not to be.
+ABCE consists of 2 steps, each step has 2 options: 
 
-**NO COMPLICATED CASE**
+1) Data preparation: 
+    * easy option
+    * complicated option
+2) A/B-calculation
+    * local (framed) approach 
+    * whole-chromosome approach 
 
-If you think the problem with compartment calculation is caused only by large inversion, or some hard heterohromatin blocks, or some local problem with genome assembly, we can enhanced the contact matrix by cutting off all problems.
-Than:
-1) Dump observed/expected contact matrix in density format (for more details see: https://github.com/aidenlab/juicer/wiki/Data-Extraction).
+<details>
+  <summary> Is my case easy or complicated? </summary>
+  
+* easy: you think the problem with compartments calculation is caused by large 
+inversion, heterochromatin blocks or mis-assemblies
 
-`java -jar juicertools.jar dump oe KR -d you_hic_map_name.hic chr_name chr_name BP resolution your_oe_matrix`
+* complicated: you have Rabl-orientation of chromosomes, or solution 
+ under "Easy CASE" was not efficient
+</details>
 
-ATTENTION! ABCE works only with intrachromosomal contacts!
+You can use any combionation of the options from these two steps. The best strategy depends on your input data and should be 
+determined empirically. 
 
-2) Use cropping_enhancing.py on dumped observed/expected matrix (use -h to more details).
+## Requerments:
+* java 8 with juicer_tools (for contacts extraction; https://github.com/aidenlab/juicer/wiki/Data-Extraction)
+* R 3.7
+* python 2.7
+* numpy
 
-`python cropping_enhancing.py -i your_oe_matrix -o path_to_output_directory -l locus_start locus_end -r matrix_resolution_in_bp`
+## Quick usage guide
 
-The script output named as "your_matrix.cropped.prs" contains a pearson correlation of contact matrix within locus of interest. This matrix are given as parameter to eig_CE.r or eig_CR.r
+## STEP I - Data preparation
 
-**THE HARD CASE**
+### Option 1. EASY CASE
+Manually define region of interest: single contiguous locus (free of inversions/misassemblies/heterochromatin blocks) which should be split into A/B compartments  
+```bash
+# Dump observed/expected contact matrix in dense format (for more details see: https://github.com/aidenlab/juicer/wiki/Data-Extraction).
+java -jar juicertools.jar dump oe KR -d you_hic_map_name.hic chr_name chr_name BP resolution path_to_your_oe_matrix
 
-If you think the yor case is complicated, for example, been caused by rubl-orientaion, or easy way was unefficient, we should use the scripts error_estimation.py and contrast_enhancing.
-
-In many case, the problem with calculating of A/B-compartments are resulted from a weak contrast between A- and B-compartments. This can be caused by rubl-orientation of chromosomes or a noise. To avoid this problem, our script combines and smoothes contacts between distant loci in relation of distance.
-
-1) Dump raw contact matrix and oe-matrix in density format (for more details see: https://github.com/aidenlab/juicer/wiki/Data-Extraction).
-
+# Crop region of interest   
+python cropping_enhancing.py -i your_oe_matrix -l locus_start locus_end -r resolution
 ```
-java -jar juicertools.jar dump observed NONE -d you_hic_map_name.hic chr_name chr_name BP resolution your_raw_matrix
+
+Parameters:
+* your_oe_matrix - the data obtained from `juicertools.jar dump` command
+
+* resolution - resolution used for `juicertools.jar dump` command
+
+* locus_start and locus_end - genomic coordinates of region of interest
+
+Use `python cropping_enhancing.py -h` for more details of usage and 
+https://github.com/aidenlab/juicer/wiki/Data-Extraction for details of `juicertools.jar dump` parameters.
+
+The script will produce *your_matrix.cropped.prs* file
+ 
+This file should be used in the next step **A/B-CALCULATION**
+
+
+### Option 2. COMPLICATED CASE
+   
+```bash
+# Dump observed/expected contact matrix in dense format (for more details see: https://github.com/aidenlab/juicer/wiki/Data-Extraction).
 java -jar juicertools.jar dump oe KR -d you_hic_map_name.hic chr_name chr_name BP resolution your_oe_matrix
+
+# Enhance oe-matrix
+python contrast_enhancing.py -i your_oe_matrix -l locus_start locus_end -r resolution 
+-d distance -c radius -e ce_radius
+```
+Parameters:
+
+* your_oe_matrix - the data obtained from `juicertools.jar dump` command
+
+* resolution - resolution used for `juicertools.jar dump` command
+
+* locus_start locus_end - coordinates of the locus of interest (i.e. 1000000 99000000).
+
+* distance, radius, ce_radius - see _example_command.txt_ for default values and [parameters optimization](#params) section to find how to choose 
+distance, radius and ce_radius 
+ 
+The script will produce *your_matrix.[ce_radius].ce.prc.prs* and *your_matrix.[ce_radius].ce.range.prs* files.
+
+
+Each of these files could be used in the next step (A/B-CALCULATION). 
+We advice to proceed with both and manually check which will provide better results.
+
+## STEP II - A/B-CALCULATION
+
+### Option 1. Compute whole-matrix PCs
+```bash
+# Compute Principle components
+eig_CR.r --args your_enhanced_matrix PC_num resolution chrm_name locus_start locus_end
 ```
 
-ATTENTION! ABCE works only with intrachromosomal contacts!
+Parameters:
+* your_enhanced_matrix - should be one of the files produced in the previous steps 
+(your_matrix.cropped.prs/your_matrix.[ce_radius].ce.prc.prs/your_matrix.[ce_radius].ce.range)
 
-2) Estimating of minimal radius for combining and smoothing contacts (use -h and see ExampleCommand.txt to more details).
+* resolution - resolution used for `juicertools.jar dump` command
 
-`python error_estimation.py -i your_raw_matrix -o output -t threshold`
+* chrm_name - chromosome name to write in output file in a .bedGraph format
 
-The "threshold" is a number of minimal contacts in the area (mean for given distance).
-The output looks like this:
+* locus_start locus_end - coordinates of the locus of interest (i.e. 1000000 99000000).
+
+* PC_num - number of PC to compute. For A/B-compartments you need 1st PC, so this should be set to 1
+
+
+The resulting file will contain desired PC1 vector: *your_enhanced_matrix.croped.pc1.eig.bedGraph* 
+
+### Option 2. Compute PCs within local frames
+
+`eig_CE.r --args your_enhanced_matrix track_for_correlation.bedGraph resolution frame_length chrm_name locus_start locus_end`
+
+Parameters:
+* your_enhanced_matrix - should be one of the files produced in the previous steps 
+(your_matrix.cropped.prs/your_matrix.[ce_radius].ce.prc.prs/your_matrix.[ce_radius].ce.range)
+
+* resolution - resolution used for `juicertools.jar dump` command
+
+* locus_start locus_end - coordinates of the locus of interest (i.e. 1000000 99000000).
+
+* frame_length - *eig_CE.r* generates PC1 within local frames. frame_length corresponds to the lengths of 
+these frames in bp  
+
+* track_for_correlation.bedGraph - Values of PC1 calculated within individual frames should 
+be correlated with external standard. This standard (.badGraph format) should reflect chromatin state, i.e. represent
+GC-content, gene density or transcriptional activity. See [parameters optimization](#params) and [usage notes](#use_notes) for details.
+
+The resulting file will contain desired PC1 vector: *your_enhanced_matrix.framed.eig.bedGraph*
+
+## <a name="params"></a> Parameters optimization
+
+The ABCE pipline requeres oprimization of several parameters.
+
+**1.) paramteres of `contrast_enhancing.py` script: distance and radius**
+
+This script perfroms averaging of contacts within submatrices of Hi-C matrix (matrix smoothing).
+Depending on data quality (sequencing deapth and noise level) and distance from diagonal the optimal
+submatrix size could be different. 
+
+Submatrix size is defined by radius parameter, which could be different at different distances from
+diagonal. For example, near main diagonal, where the data is reach, we use radius=0, which means
+that no averaging will be performed. For larger distances, we increase radius. Paired distance-radius 
+values could be passed to `contrast_enhancing.py` as follows:
+`python contrast_enhancing.py -d distance1 distance2 distance3 -c radius1 radius2 radius3 ...other arguments...` 
+
+We provide a script `error_estimation.py` which estimates the radius for different distances.
+Use this script as follows:
+
+```bash
+# first, get NOT NORMALIZED (raw) data:
+java -jar juicertools.jar dump observed NONE -d you_hic_map_name.hic chr_name chr_name BP resolution your_raw_matrix
+# then, run error_estimation.py on the obtained raw matrix
+python error_estimation.py -i your_raw_matrix -o output -t threshold
+```
+
+The _threshold_ determines radius _c_ so that for each point _i,j_ of the raw Hi-C matrix, 
+the submatix _i-c..i+c ; j-c..j+c_ contains >=_threshold_ reads. 
+
+Averaging/smoothing over larger submatrices (larger _threshold_ values) reduces noise, but will not allow inferring fine compartments structure. 
+Using smaller _threshold_ would allow capturing smaller compartments, but is more sensitive to noise.
+We recommend starting with _threshold_ value equal to 25 at 25 KB resolution.
+  
+The output of `error_estimation.py` looks like this:
 
 ```
 example/example.25000.none
@@ -50,35 +174,38 @@ distance combine_radius
 512 4
 ```
 
-That means the desirable radius of contact combining for loci lying between 0 and 46 bins is 0, between 46 and 510 bins is 1, etc. This information is a advise, not a requirement. 
+This means that desirable radius for contacts averaging for loci lying between 0 and 46 bins is 0, 
+between 46 and 510 bins is 1, etc.
+ 
+This information is a advise, not a requirement.
+ 
+After certain distance the radius often increases only slightly, so at this point we fix radius value to the 
+maximal number observed in the file. In the example above, we would use radius 0 for distances 
+below 46 bins, 1 for 46..510 and 4 for distances >510 bins   
+   
+**2.) paramter of `contrast_enhancing.py` script: ce_radius**
 
-3) Enhancing oe-matrix using information about distance and combine radius (use -h and see ExampleCommand.txt to more details).
+Within any submatrix of size 2*ce_radius+1, all correlation values will be normalized to be 
+in the -1..+1 range. Thus, ce_radius should be high enough to include several compartment transistion.
+On the other hand, large ce_radius will allow long-range effects, such as telomere/centromere 
+clustering dominate local compartments.
 
-`python contrast_enhancing.py -i your_oe_matrix -l locus_start locus_end -r matrix_resolution_in_bp -d distance -c combine_radius -e contrast_enhancing_radius`
+We typically use ce_radius values (measured in bins) 3,5 or 7, but users may test other values as well.
+For convenience, multiple space-separated values could be used as an input of `contrast_enhancing.py`:
 
-The script outputs are named as "your_matrix.[combine_radius].ce.prc.prs" and "your_matrix.[combine_radius].ce.range.prs".
+`contrast_enhancing.py -e 3 5 7 ...other arguments...`
 
-If you ignored step 2 you can ignore -d and -c flags.
+This will produce multiple output files, each corresponding to one of the provided ce_radius values.
 
-**A/B-CALCULATION**
+**3.) paramter of `eig_CE.r`: track_for_correlation**
 
-Second stage is calculating PC from scripts output. 
+In our experience, the highest correlation is obtained when using RNA-seq data (fpkm) .bedGraph. 
+However, gene density (calculated per Hi-C bin) also works well. GC-contents gives very low correlation
+values and should not be used if other options available.
 
-*eig_CR.r* generates PC1/2/... from full matrix. Using (see ExampleCommand.txt to more details):
+## <a name="use_notes"></a> Usage notes
 
-`eig_CR.r --args your_enhanced_matrix PC_num resolution_in_bp chrm_name locus_start_in_bp locus_end_in_bp`
-
-If you wish calculate A\B-compartment, than PC_num is 1. The output is named as "your_enhanced_matrix.croped.pc[PC_num].eig.bedGraph"
-
-*eig_CE.r* generates PC1 within local frames. This script splits locus of interest on several frames and calculate independly PC1 for each frame. Than values of PC1 are correlated with given track (.badGraph) and the data from different frame are combined. Than operation help us to avoid problems with distant interaction.
-
-Using (see ExampleCommand.txt to more details):
-
-`eig_CE.r --args your_enhanced_matrix track_for_correlation.bedGraph resolution_in_bp frame_length_in_bp chrm_name locus_start_in_bp locus_end_in_bp`
-
-The output is named as your_enhanced_matrix.framed.eig.bedGraph
-
-ATTENTION! 
+0) ABCE works only with intrachromosomal contacts!
 1) The track for correlation must contain ONLY a chromosome of locus of interest.
 2) The track must start from 0.
 3) The end of track must be equal the locus end or more.
