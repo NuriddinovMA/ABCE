@@ -60,16 +60,14 @@ If you ignored step 2 you can ignore -d and -c flags.
 
 Second stage is calculating PC from scripts output. 
 
-1) eig_CR.r generates PC1/2/... from full matrix.
+*eig_CR.r* generates PC1/2/... from full matrix. Using (see ExampleCommand.txt to more details):
 
-Using (see ExampleCommand.txt to more details):
+`eig_CR.r --args your_enhanced_matrix PC_num resolution_in_bp chrm_name locus_start_in_bp locus_end_in_bp`
 
-`eig_CR.r --args your_enhanced_matrix number_of_PC resolution_in_bp chrm_name locus_start_in_bp locus_end_in_bp`
+If you wish calculate A\B-compartment, than PC_num is 1. The output is named as "your_enhanced_matrix.croped.pc[PC_num].eig.bedGraph"
 
-If you wish calculate A\B-compartment, than number_of_PC is 1.
 
-2) eig_CE.r - generates PC1 from local frames.
-This script splits locus of interest on several frames and calculate independly PC1 for each frame. Than values of PC1 are correlated with given track (.badGraph) and the data from different frame are combined. Than operation help us to avoid problems with distant interaction.
+*eig_CE.r* generates PC1 within local frames. This script splits locus of interest on several frames and calculate independly PC1 for each frame. Than values of PC1 are correlated with given track (.badGraph) and the data from different frame are combined. Than operation help us to avoid problems with distant interaction.
 
 Using (see ExampleCommand.txt to more details):
 
