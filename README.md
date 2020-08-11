@@ -9,7 +9,7 @@ If you think the problem with compartment calculation is caused only by large in
 Than:
 1) Dump observed/expected contact matrix in density format (for more details see: https://github.com/aidenlab/juicer/wiki/Data-Extraction).
 
-`java -jar juicertools.jar dump oe KR -d you_hic_map_name.hic chr_name chr_name BP resolution path_to_your_oe_matrix`
+`java -jar juicertools.jar dump oe KR -d you_hic_map_name.hic chr_name chr_name BP resolution your_oe_matrix`
 
 ATTENTION! ABCE works only with intrachromosomal contacts!
 
@@ -27,8 +27,8 @@ In many case, the problem with calculating of A/B-compartments are resulted from
 
 1) Dump raw contact matrix and oe-matrix in density format (for more details see: https://github.com/aidenlab/juicer/wiki/Data-Extraction).
 
-`java -jar juicertools.jar dump observed NONE -d you_hic_map_name.hic chr_name chr_name BP resolution your_raw_matrix`
-`java -jar juicertools.jar dump oe KR -d you_hic_map_name.hic chr_name chr_name BP resolution your_oe_matrix`
+`java -jar juicertools.jar dump observed NONE -d you_hic_map_name.hic chr_name chr_name BP resolution your_raw_matrix
+java -jar juicertools.jar dump oe KR -d you_hic_map_name.hic chr_name chr_name BP resolution your_oe_matrix`
 ATTENTION! ABCE works only with intrachromosomal contacts!
 
 2) Estimating of minimal radius for combining and smoothing contacts (use -h and see ExampleCommand.txt to more details).
