@@ -15,12 +15,14 @@ start_time = timeit.default_timer()
 out = open(args.out,'w')
 print 'start processing %s' % args.input
 print >> out, args.input
+print >> out, 'distance radius'
+print >> out, '0 0'
 X,Y,H = [],[],[]
 f = 0
 M = np.genfromtxt(args.input,dtype=np.float32)
 ln = len(M[0])
 for k in range(ln):
-	print '.',
+	if k % 10 == 0: print '.',
 	for i in range(ln):
 		try:
 			C = np.nansum(M[(i-f):(i+f+1),(i+k-f):(i+k+f+1)])
