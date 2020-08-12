@@ -1,5 +1,5 @@
 python error_estimating.py -i example.25000.none -o example.error.txt -t 25
 python cropping_enhancing.py -i example.25000.oe -l 0 30000000 -r 25000
 python contrast_enhancing.py -i example.25000.oe -l 0 30000000 -r 25000 -d 0 54 590 -c 0 1 4 -e 3 5 7
-Rscript eig_CR.r example.25000.oe.cropped.prs 1 25000 3R 0 30000000
-Rscript eig_CE.r example.25000.oe.5.ce.prc.prs example.track_for_correlation.bedGraph 25000 10000000 3R 0 30000000
+Rscript eig_whole.r example.25000.oe.cropped.prs 1 25000 3R 0 30000000
+Rscript eig_framed.r example.25000.oe.5.ce.prc.prs example.track_for_correlation.bedGraph 25000 10000000 3R 0 30000000
