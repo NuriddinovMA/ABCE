@@ -1,14 +1,13 @@
 args <- commandArgs(trailingOnly = T)
 print(args)
-a<-getwd()
 print("start")
-fname <- args[2]
-corname <- args[3]
-res <- as.integer(args[4])
-fr <- as.integer(as.integer(args[5])/res)
-chr <- args[6]
-st <- as.integer(as.integer(args[7])/res)+1
-fi <- as.integer(as.integer(args[8])/res)
+fname <- args[1]
+corname <- args[2]
+res <- as.integer(args[3])
+fr <- as.integer(as.integer(args[4])/res)
+chr <- args[5]
+st <- as.integer(as.integer(args[6])/res)+1
+fi <- as.integer(as.integer(args[7])/res)
 m.p <- c()
 
 m.s <- scan(fname, sep=' ')
@@ -48,5 +47,5 @@ pos1 <- seq.int(0,ln-1,1)
 pos1 <- (pos1 + st)*res
 pos2 <- pos1 + res - 1
 t.out <- format(data.frame(chr,pos1,pos2,m.p),trim=TRUE,scientific=FALSE)
-fout <- paste0(fname, '.framed.eig.bedGraph')
+fout <- paste0(fname, '.framed.pc1.eig.bedGraph')
 write.table(file=fout,t.out,dec=",",col.names=F,row.names=F,sep='\t',quote=FALSE)

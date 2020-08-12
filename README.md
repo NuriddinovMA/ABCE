@@ -96,7 +96,7 @@ Rscript eig_CR.r --args your_enhanced_matrix PC_num resolution chrm_name locus_s
 
 Parameters:
 * your_enhanced_matrix - should be one of the files produced in the previous steps 
-(your_matrix.cropped.prs/your_matrix.[ce_radius].ce.prc.prs/your_matrix.[ce_radius].ce.range)
+(your_matrix.cropped.prs/your_matrix.[ce_radius].ce.prc.prs/your_matrix.[ce_radius].ce.range.prs)
 
 * resolution - resolution used for `juicertools.jar dump` command
 
@@ -107,11 +107,11 @@ Parameters:
 * PC_num - number of PC to compute. For A/B-compartments you need 1st PC, so this should be set to 1
 
 
-The resulting file will contain desired PC1 vector: *your_enhanced_matrix.croped.pc1.eig.bedGraph* 
+The resulting file will contain desired PC1 vector: *your_enhanced_matrix.whole.pc1.eig.bedGraph* 
 
 ### Option 2. Compute PCs within local frames
 
-`Rscript eig_CE.r --args your_enhanced_matrix track_for_correlation.bedGraph resolution frame_length chrm_name locus_start locus_end`
+`Rscript eig_CE.r your_enhanced_matrix track_for_correlation.bedGraph resolution frame_length chrm_name locus_start locus_end`
 
 Parameters:
 * your_enhanced_matrix - should be one of the files produced in the previous steps 
@@ -128,7 +128,7 @@ these frames in bp
 be correlated with external standard. This standard (.badGraph format) should reflect chromatin state, i.e. represent
 GC-content, gene density or transcriptional activity. See [parameters optimization](#params) and [usage notes](#use_notes) for details.
 
-The resulting file will contain desired PC1 vector: *your_enhanced_matrix.framed.eig.bedGraph*
+The resulting file will contain desired PC1 vector: *your_enhanced_matrix.framed.pc1.eig.bedGraph*
 
 ## <a name="params"></a> Parameters optimization
 
