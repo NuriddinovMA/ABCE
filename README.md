@@ -92,7 +92,7 @@ We advice to proceed with both and manually check which will provide better resu
 ### Option 1. Compute whole-matrix PCs
 ```bash
 # Compute Principle components
-Rscript eig_CR.r --args your_enhanced_matrix PC_num resolution chrm_name locus_start locus_end
+Rscript eig_whole.r --args your_enhanced_matrix PC_num resolution chrm_name locus_start locus_end
 ```
 
 Parameters:
@@ -112,7 +112,7 @@ The resulting file will contain desired PC1 vector: *your_enhanced_matrix.whole.
 
 ### Option 2. Compute PCs within local frames
 
-`Rscript eig_CE.r your_enhanced_matrix track_for_correlation.bedGraph resolution frame_length chrm_name locus_start locus_end`
+`Rscript eig_framed.r your_enhanced_matrix track_for_correlation.bedGraph resolution frame_length chrm_name locus_start locus_end`
 
 Parameters:
 * your_enhanced_matrix - should be one of the files produced in the previous steps 
@@ -199,7 +199,7 @@ For convenience, multiple space-separated values could be used as an input of `c
 
 This will produce multiple output files, each corresponding to one of the provided ce_radius values.
 
-**3.) paramater of `eig_CE.r`: track_for_correlation**
+**3.) paramater of `eig_framed.r`: track_for_correlation**
 
 In our experience, the highest correlation is obtained when using RNA-seq data (fpkm) .bedGraph. 
 However, gene density (calculated per Hi-C bin) also works well. GC-contents gives very low correlation
