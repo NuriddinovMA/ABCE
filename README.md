@@ -123,7 +123,7 @@ Parameters:
 * locus_start locus_end - coordinates of the locus of interest (i.e. 1000000 99000000).
 
 * frame_length - `eig_framed.r` generates PC1 within local frames. _frame length_ parameter corresponds to the lengths of 
-these frames in bp  
+these frames in bp. See [parameters optimization](#params) for details.
 
 * track_for_correlation.bedGraph - Values of PC1 calculated within individual frames should 
 be correlated with external standard. This standard (.badGraph format) should reflect chromatin state, i.e. represent
