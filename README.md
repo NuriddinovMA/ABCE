@@ -205,6 +205,10 @@ In our experience, the highest correlation is obtained when using RNA-seq data (
 However, gene density (calculated per Hi-C bin) also works well. GC-contents gives very low correlation
 values and should not be used if other options available.
 
+**4.) paramater of `eig_framed.r`: frame_length**
+
+The `eig_framed.r` splits the locus of interest on seperated frames and calculates independently PC1 within this frames. In our experience, the PC1 processed within the long frames is influenced by the long-range hi-c features (e.g. noise), the PC1 processed within the short frames is influenced by the local hi-c structures (e.g. TADs). We typically use the frames from 5MB to 20MB length that allow to avoid the long-range and short-range effects.         
+
 ## <a name="use_notes"></a> Usage notes
 
 0) ABCE works only with intrachromosomal contacts!
