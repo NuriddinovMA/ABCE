@@ -122,7 +122,7 @@ Parameters:
 
 * locus_start locus_end - coordinates of the locus of interest (i.e. 1000000 99000000).
 
-* frame_length - *eig_CE.r* generates PC1 within local frames. frame_length corresponds to the lengths of 
+* frame_length - `eig_framed.r` generates PC1 within local frames. _frame length_ parameter corresponds to the lengths of 
 these frames in bp  
 
 * track_for_correlation.bedGraph - Values of PC1 calculated within individual frames should 
