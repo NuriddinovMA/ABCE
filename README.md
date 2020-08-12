@@ -26,9 +26,10 @@ determined empirically.
 
 ## Requerments:
 * java 8 with juicer_tools (for contacts extraction; https://github.com/aidenlab/juicer/wiki/Data-Extraction)
-* R 3.7
+* R 3.4.4
 * python 2.7
 * numpy
+* matplotlib for picture output
 
 ## Quick usage guide
 
