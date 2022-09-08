@@ -14,6 +14,7 @@ m.s <- scan(fname, sep=' ')
 lnf <- as.integer( sqrt(length(m.s)) )
 m.m <- matrix(m.s,nrow=lnf,byrow=T)
 m.m[!is.finite(m.m)] <- 0
+m.m <- m.m[st:fi,st:fi]
 gc.c <- read.table(corname)[,4]
 gc.c[gc.c>20] <- 20
 
@@ -37,6 +38,7 @@ m.h[m.h>10] <- 10
 m.h[m.h<-10] <- -10
 
 cr <- cor(m.h,gc.s[s[i,1]:s[i,2]], method='pearson')
+print(s[i,1:2])
 print(cr)
 if (cr > 0) { m.p <- c(m.p, m.pr ) }
 else { m.p <- c(m.p, -1*m.pr) }
