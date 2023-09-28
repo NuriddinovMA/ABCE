@@ -31,7 +31,7 @@ M = np.genfromtxt(args.input,dtype=np.float32)
 ln = len(M)
 print( ln )
 
-if args.locus[1] != 0: args.locus = args.locus[0]/args.resolution,args.locus[1]/args.resolution
+if args.locus[1] != 0: args.locus = args.locus[0]//args.resolution,args.locus[1]//args.resolution
 else: args.locus = 0,ln
 
 print( args.locus )
@@ -46,9 +46,9 @@ ma = set([])
 args.distance = [0] + args.distance + [ln+1]
 args.combining = [0] + args.combining + args.combining[-1:]
 for i in range(0,ln-80):
-	if np.count_nonzero(M[i,i:(i+80)]) < 40: ma.add(i)
+	if np.count_nonzero(M[i,i:(i+80)]) < 20: ma.add(i)
 for i in range(80,ln):
-	if np.count_nonzero(M[(i-80):i,i]) < 40: ma.add(i)
+	if np.count_nonzero(M[(i-80):i,i]) < 20: ma.add(i)
 ma = list(ma)
 ma.sort()
 for i in range(1,len(ma)):

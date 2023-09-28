@@ -14,9 +14,12 @@ m.s <- scan(fname, sep=' ')
 lnf <- as.integer( sqrt(length(m.s)) )
 m.m <- matrix(m.s,nrow=lnf,byrow=T)
 m.m[!is.finite(m.m)] <- 0
-m.m <- m.m[st:fi,st:fi]
+
+st2 <- 0
+fi2 <- fi-st
+m.m <- m.m[st2:fi2,st2:fi2]
 gc.c <- read.table(corname)[,4]
-gc.c[gc.c>20] <- 20
+gc.c[gc.c>10] <- 10
 
 gc.s <- gc.c[st:fi]
 gc.s[!is.finite(gc.s)] <- 0

@@ -21,17 +21,17 @@ start_time = timeit.default_timer()
 
 parse = fname.split('.')
 elp = timeit.default_timer() - start_time
-print 'start processing %s %.2f' % (fname, elp)
+print( 'start processing %s %.2f' % (fname, elp) )
 M = np.genfromtxt(args.input,dtype=np.float32)
 ln = len(M)
-print ln, args.locus, args.resolution
-if args.locus[1] != 0: args.locus = args.locus[0]/args.resolution,args.locus[1]/args.resolution
+print( ln, args.locus, args.resolution )
+if args.locus[1] != 0: args.locus = args.locus[0]//args.resolution,args.locus[1]//args.resolution
 else: args.locus = 0,ln
 
-print args.locus
+print( args.locus )
 M = M[args.locus[0]:args.locus[1],args.locus[0]:args.locus[1]]
 ln = len(M[0])
-print ln
+print( ln )
 A = np.zeros([ln,ln])
 M = np.nan_to_num(M)
 ma = set([])
@@ -45,7 +45,7 @@ for i in range(1,len(ma)):
 	if (ma[i] - ma[i-1]) < 4: ma.extend([j for j in range(ma[i-1]+1,ma[i])])
 ma.sort()
 elp = timeit.default_timer() - start_time
-print '\treading oe %.2f' % elp
+print( '\treading oe %.2f' % elp )
 for i in range(ln):
 	for j in range(i,ln):
 		if i in ma or j in ma:
@@ -70,7 +70,7 @@ for i in range(ln):
 		M[i+1,i] = np.nan
 	except IndexError: pass
 elp = timeit.default_timer() - start_time
-print '\tcorrelating and cleaning %.2f' % elp
+print( '\tcorrelating and cleaning %.2f' % elp )
 
 if args.pic != False:
 	im = plt.imshow(M, cmap='coolwarm',vmin = -.15, vmax = .15)
@@ -81,6 +81,6 @@ np.savetxt(args.out+fname+'.cropped.prs', M)
 
 M = np.zeros([ln,ln])
 elp = timeit.default_timer() - start_time
-print '\t\t writing contracting matrix frame %.2f' % elp
+print( '\t\t writing contracting matrix frame %.2f' % elp)
 elp = timeit.default_timer() - start_time
-print 'end processing %s %.2f' % (fname, elp)
+print ('end processing %s %.2f' % (fname, elp))
